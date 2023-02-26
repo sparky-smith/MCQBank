@@ -1,0 +1,51 @@
+version: '3.9'
+
+x-logging:
+  &default-logging
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+
+services:
+ #  Mongodb service
+  mongo_db: 
+    container_name: mongoDb_MCQ
+    image: mongo:latest
+    restart: always
+    ports:
+      - 2718:27017
+    volumes:
+      - mongo_db:/data/db
+
+  # Node api service
+  backend: 
+    image: localhost:5005/mcq_backend:latest
+    build: ./backend
+    container_name: mcq-backend
+    ports:
+    # port on local: port on container
+      - 5005:5005
+    environment:
+      PORT: 5005
+      MONGODB_URL: mongodb://mongo_db:27017/MCQ
+      CLIENT_URL: http://localhost:8000
+    
+    depends_on:
+      - mongo_db
+
+
+  frontend:
+    image: localhost:5005/mcq_frontend:latest
+    build: ./frontend
+    container_name: mcq-frontend
+    ports:
+      - "8000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+
+volumes:
+  mongo_db: {}
+
