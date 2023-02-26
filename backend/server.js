@@ -8,7 +8,7 @@ const connectDb = require('./server/database/connection') // local module
 
 const app = express();
 
-app.use(cors({credentials: true, origin: 'http://localhost:3000'}))
+app.use(cors({credentials: true, origin: process.env.CLIENT_URL}))
 
 dotenv.config({path:'config.env'});
 

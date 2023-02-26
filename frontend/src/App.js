@@ -14,7 +14,7 @@ function App() {
   }, []);
 
   async function loadQuestion() {
-    const questions = await axios.get("http://localhost:5000/");
+    const questions = await axios.get(process.env.REACT_APP_SERVER_URL);
     setQuesnData(questions.data);
     questions.data.forEach((q) => {
       answers.push(q.answer);
@@ -52,21 +52,18 @@ function App() {
     });
   };
   const onFinish = async (values) => {
-    console.log("Success:", values);
     let options = values.options.split(",");
-    console.log(options);
     const body = {
       questionTitle: values.title,
       options: options,
       answer: values.answer,
     };
     const create = await axios
-      .post("http://localhost:5000/createquestion", body, {
+      .post(`${process.env.REACT_APP_SERVER_URL}/createquestion`, body, {
         "content-Type": "application/json",
       })
       .then(
         (response) => {
-          console.log(response);
         },
         (error) => {
           console.log(error);
